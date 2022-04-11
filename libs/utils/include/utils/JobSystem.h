@@ -60,15 +60,15 @@ public:
         // Size is chosen so that we can store at least std::function<>
         // the alignas() qualifier ensures we're multiple of a cache-line.
         static constexpr size_t JOB_STORAGE_SIZE_BYTES =
-                sizeof(std::function<void()>) > 48 ? sizeof(std::function<void()>) : 48;
+                sizeof(std::function<void()>) > 48 ? sizeof(std::function<void()>) : 48;  // why 48  ??????
         static constexpr size_t JOB_STORAGE_SIZE_WORDS =
                 (JOB_STORAGE_SIZE_BYTES + sizeof(void*) - 1) / sizeof(void*);
 
         // keep it first, so it's correctly aligned with all architectures
-        // this is were we store the job's data, typically a std::function<>
-                                                                // v7 | v8
+        // this is where we store the job's data, typically a std::function<>
+                                                                // v7 | v8   // what is v7, v8?  ARM v7, v8??
         void* storage[JOB_STORAGE_SIZE_WORDS];                  // 48 | 48
-        JobFunc function;                                       //  4 |  8
+        JobFunc function;                                       //  4 |  8  // 和storage算是重复声明吗???
         uint16_t parent;                                        //  2 |  2
         std::atomic<uint16_t> runningJobCount = { 1 };          //  2 |  2
         mutable std::atomic<uint16_t> refCount = { 1 };         //  2 |  2
@@ -325,8 +325,8 @@ private:
         alignas(CACHELINE_SIZE)     // this causes 56-bytes padding
         JobSystem* js;
         std::thread thread;
-        default_random_engine rndGen;
-        uint32_t id;
+        default_random_engine rndGen; //
+        uint32_t id;  // 4
     };
 
     static_assert(sizeof(ThreadState) % CACHELINE_SIZE == 0,

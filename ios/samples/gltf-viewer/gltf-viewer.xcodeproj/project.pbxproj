@@ -26,11 +26,11 @@
 		1FF7EE9D5DD74F1A740C0D88 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2B973C3E0FE0EEED37D41D32 /* FILModelView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FILModelView.h; sourceTree = "<group>"; };
 		3B5A2C1598614ED63098A783 /* FILViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FILViewController.mm; sourceTree = "<group>"; };
-		5271315876D6BC61346DFD97 /* default_env_skybox.ktx */ = {isa = PBXFileReference; path = default_env_skybox.ktx; sourceTree = "<group>"; };
+		5271315876D6BC61346DFD97 /* default_env_skybox.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_env_skybox.ktx; sourceTree = "<group>"; };
 		6E6BB885F2B193E786CD9F14 /* FILViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FILViewController.h; sourceTree = "<group>"; };
 		7F78E613984102280C822052 /* BusterDrone */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BusterDrone; path = ../../../third_party/models/BusterDrone; sourceTree = SOURCE_ROOT; };
-		9ADEA6DE7305D0B8CCFFA53D /* gltf-viewer.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "gltf-viewer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A027015F6F283E92C379F0B1 /* default_env_ibl.ktx */ = {isa = PBXFileReference; path = default_env_ibl.ktx; sourceTree = "<group>"; };
+		9ADEA6DE7305D0B8CCFFA53D /* gltf-viewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gltf-viewer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A027015F6F283E92C379F0B1 /* default_env_ibl.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_env_ibl.ktx; sourceTree = "<group>"; };
 		A0A866F9B1B8D315E88D3D12 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B9C391BBD90EB54D27F8E4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C7ECAA95F4A55C69B948F806 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -119,8 +119,6 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1200;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 90327DE42AE5DF12C4BD2113 /* Build configuration list for PBXProject "gltf-viewer" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -390,6 +388,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = VS96936QKL;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_METAL=1",
@@ -427,7 +426,7 @@
 					"-lviewer",
 					"-lcivetweb",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer";
+				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer-demo";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -438,6 +437,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = VS96936QKL;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_METAL=1",
@@ -475,7 +475,7 @@
 					"-lviewer",
 					"-lcivetweb",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer";
+				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer-demo";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -548,6 +548,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = VS96936QKL;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_OPENGL=1",
@@ -585,7 +586,7 @@
 					"-lviewer",
 					"-lcivetweb",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer";
+				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer-demo";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -596,6 +597,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = VS96936QKL;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_OPENGL=1",
@@ -633,7 +635,7 @@
 					"-lviewer",
 					"-lcivetweb",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer";
+				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.gltf-viewer-demo";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

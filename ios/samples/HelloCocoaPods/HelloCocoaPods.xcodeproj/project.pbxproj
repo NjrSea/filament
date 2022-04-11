@@ -15,6 +15,20 @@
 		43C0904524B7DCE9009D291E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43C0904424B7DCE9009D291E /* Assets.xcassets */; };
 		43C0904824B7DCE9009D291E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43C0904624B7DCE9009D291E /* LaunchScreen.storyboard */; };
 		43C0904B24B7DCE9009D291E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C0904A24B7DCE9009D291E /* main.m */; };
+		A0BF6BBD27FA9B9D00B99606 /* DemoViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A0BF6BBC27FA9B9D00B99606 /* DemoViewController.mm */; };
+		A0BF6BC027FC732800B99606 /* BlendViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A0BF6BBF27FC732800B99606 /* BlendViewController.mm */; };
+		A0DAAB8D27FF271E007ADB94 /* my.filamat in Resources */ = {isa = PBXBuildFile; fileRef = A0DAAB8727FF271D007ADB94 /* my.filamat */; };
+		A0DAAB8F27FF271E007ADB94 /* MyMat.mat in Resources */ = {isa = PBXBuildFile; fileRef = A0DAAB8A27FF271D007ADB94 /* MyMat.mat */; };
+		A0DAAB9027FF271E007ADB94 /* resources.bin in Resources */ = {isa = PBXBuildFile; fileRef = A0DAAB8B27FF271D007ADB94 /* resources.bin */; };
+		A0F63E8B27FFBB12002AD86D /* Resource.S in Sources */ = {isa = PBXBuildFile; fileRef = A0F63E8A27FFBB12002AD86D /* Resource.S */; };
+		A0F63E8E27FFC3C7002AD86D /* bImage0.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E8D27FFC3C7002AD86D /* bImage0.jpg */; };
+		A0F63E9027FFC6AD002AD86D /* bImage1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E8F27FFC6AD002AD86D /* bImage1.jpg */; };
+		A0F63E9828046640002AD86D /* OpenSans-Regular.png in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9228046640002AD86D /* OpenSans-Regular.png */; };
+		A0F63E9928046640002AD86D /* Roboto-Medium.json in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9328046640002AD86D /* Roboto-Medium.json */; };
+		A0F63E9A28046640002AD86D /* OpenSans-Regular.json in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9428046640002AD86D /* OpenSans-Regular.json */; };
+		A0F63E9B28046640002AD86D /* Roboto-Medium.png in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9528046640002AD86D /* Roboto-Medium.png */; };
+		A0F63E9C28046640002AD86D /* OpenSans-Regular.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9628046640002AD86D /* OpenSans-Regular.plist */; };
+		A0F63E9D28046640002AD86D /* Roboto-Medium.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9728046640002AD86D /* Roboto-Medium.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +46,26 @@
 		43C0904A24B7DCE9009D291E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		43C0905124B7DF20009D291E /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		9B0B8E3424AB80B4FB0F5FF1 /* Pods-HelloCocoaPods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloCocoaPods.release.xcconfig"; path = "Target Support Files/Pods-HelloCocoaPods/Pods-HelloCocoaPods.release.xcconfig"; sourceTree = "<group>"; };
+		A0BF6BBB27FA9B9D00B99606 /* DemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		A0BF6BBC27FA9B9D00B99606 /* DemoViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoViewController.mm; sourceTree = "<group>"; };
+		A0BF6BBE27FC732800B99606 /* BlendViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlendViewController.h; sourceTree = "<group>"; };
+		A0BF6BBF27FC732800B99606 /* BlendViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlendViewController.mm; sourceTree = "<group>"; };
+		A0DAAB8627FF271D007ADB94 /* resources.apple.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = resources.apple.S; sourceTree = "<group>"; };
+		A0DAAB8727FF271D007ADB94 /* my.filamat */ = {isa = PBXFileReference; lastKnownFileType = file; path = my.filamat; sourceTree = "<group>"; };
+		A0DAAB8827FF271D007ADB94 /* resources.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = resources.S; sourceTree = "<group>"; };
+		A0DAAB8927FF271D007ADB94 /* resources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resources.h; sourceTree = "<group>"; };
+		A0DAAB8A27FF271D007ADB94 /* MyMat.mat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MyMat.mat; sourceTree = "<group>"; };
+		A0DAAB8B27FF271D007ADB94 /* resources.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = resources.bin; sourceTree = "<group>"; };
+		A0F63E8A27FFBB12002AD86D /* Resource.S */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = Resource.S; sourceTree = "<group>"; };
+		A0F63E8C27FFC346002AD86D /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		A0F63E8D27FFC3C7002AD86D /* bImage0.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bImage0.jpg; sourceTree = "<group>"; };
+		A0F63E8F27FFC6AD002AD86D /* bImage1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bImage1.jpg; sourceTree = "<group>"; };
+		A0F63E9228046640002AD86D /* OpenSans-Regular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OpenSans-Regular.png"; sourceTree = "<group>"; };
+		A0F63E9328046640002AD86D /* Roboto-Medium.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Roboto-Medium.json"; sourceTree = "<group>"; };
+		A0F63E9428046640002AD86D /* OpenSans-Regular.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "OpenSans-Regular.json"; sourceTree = "<group>"; };
+		A0F63E9528046640002AD86D /* Roboto-Medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Roboto-Medium.png"; sourceTree = "<group>"; };
+		A0F63E9628046640002AD86D /* OpenSans-Regular.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OpenSans-Regular.plist"; sourceTree = "<group>"; };
+		A0F63E9728046640002AD86D /* Roboto-Medium.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Roboto-Medium.plist"; sourceTree = "<group>"; };
 		D8F6B088AA46E901D4C80A53 /* libPods-HelloCocoaPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HelloCocoaPods.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDD44F53C2D94EF626D2238 /* Pods-HelloCocoaPods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloCocoaPods.debug.xcconfig"; path = "Target Support Files/Pods-HelloCocoaPods/Pods-HelloCocoaPods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -51,6 +85,8 @@
 		43C0902C24B7DCE8009D291E = {
 			isa = PBXGroup;
 			children = (
+				A0F63E9128046640002AD86D /* fonts */,
+				A0DAAB8527FF271D007ADB94 /* material */,
 				43C0903724B7DCE8009D291E /* HelloCocoaPods */,
 				43C0903624B7DCE8009D291E /* Products */,
 				B47DA4B5053E628E22DFEBC7 /* Pods */,
@@ -80,6 +116,11 @@
 				43C0904624B7DCE9009D291E /* LaunchScreen.storyboard */,
 				43C0904924B7DCE9009D291E /* Info.plist */,
 				43C0904A24B7DCE9009D291E /* main.m */,
+				A0BF6BBB27FA9B9D00B99606 /* DemoViewController.h */,
+				A0BF6BBC27FA9B9D00B99606 /* DemoViewController.mm */,
+				A0BF6BBE27FC732800B99606 /* BlendViewController.h */,
+				A0BF6BBF27FC732800B99606 /* BlendViewController.mm */,
+				A0F63E8C27FFC346002AD86D /* stb_image.h */,
 			);
 			path = HelloCocoaPods;
 			sourceTree = "<group>";
@@ -91,6 +132,35 @@
 				D8F6B088AA46E901D4C80A53 /* libPods-HelloCocoaPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A0DAAB8527FF271D007ADB94 /* material */ = {
+			isa = PBXGroup;
+			children = (
+				A0F63E8F27FFC6AD002AD86D /* bImage1.jpg */,
+				A0F63E8D27FFC3C7002AD86D /* bImage0.jpg */,
+				A0DAAB8627FF271D007ADB94 /* resources.apple.S */,
+				A0DAAB8727FF271D007ADB94 /* my.filamat */,
+				A0DAAB8827FF271D007ADB94 /* resources.S */,
+				A0DAAB8927FF271D007ADB94 /* resources.h */,
+				A0DAAB8A27FF271D007ADB94 /* MyMat.mat */,
+				A0DAAB8B27FF271D007ADB94 /* resources.bin */,
+				A0F63E8A27FFBB12002AD86D /* Resource.S */,
+			);
+			path = material;
+			sourceTree = "<group>";
+		};
+		A0F63E9128046640002AD86D /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A0F63E9228046640002AD86D /* OpenSans-Regular.png */,
+				A0F63E9328046640002AD86D /* Roboto-Medium.json */,
+				A0F63E9428046640002AD86D /* OpenSans-Regular.json */,
+				A0F63E9528046640002AD86D /* Roboto-Medium.png */,
+				A0F63E9628046640002AD86D /* OpenSans-Regular.plist */,
+				A0F63E9728046640002AD86D /* Roboto-Medium.plist */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		B47DA4B5053E628E22DFEBC7 /* Pods */ = {
@@ -160,9 +230,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0F63E9D28046640002AD86D /* Roboto-Medium.plist in Resources */,
+				A0F63E9C28046640002AD86D /* OpenSans-Regular.plist in Resources */,
+				A0DAAB8D27FF271E007ADB94 /* my.filamat in Resources */,
+				A0F63E9828046640002AD86D /* OpenSans-Regular.png in Resources */,
 				43C0904824B7DCE9009D291E /* LaunchScreen.storyboard in Resources */,
 				43C0904524B7DCE9009D291E /* Assets.xcassets in Resources */,
+				A0F63E9027FFC6AD002AD86D /* bImage1.jpg in Resources */,
+				A0DAAB8F27FF271E007ADB94 /* MyMat.mat in Resources */,
+				A0F63E9A28046640002AD86D /* OpenSans-Regular.json in Resources */,
+				A0F63E8E27FFC3C7002AD86D /* bImage0.jpg in Resources */,
+				A0F63E9928046640002AD86D /* Roboto-Medium.json in Resources */,
 				43C0904324B7DCE8009D291E /* Main.storyboard in Resources */,
+				A0DAAB9027FF271E007ADB94 /* resources.bin in Resources */,
+				A0F63E9B28046640002AD86D /* Roboto-Medium.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,9 +279,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0BF6BC027FC732800B99606 /* BlendViewController.mm in Sources */,
 				43C0904024B7DCE8009D291E /* ViewController.mm in Sources */,
 				43C0903A24B7DCE8009D291E /* AppDelegate.m in Sources */,
 				43C0904B24B7DCE9009D291E /* main.m in Sources */,
+				A0F63E8B27FFBB12002AD86D /* Resource.S in Sources */,
+				A0BF6BBD27FA9B9D00B99606 /* DemoViewController.mm in Sources */,
 				43C0903D24B7DCE8009D291E /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +428,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Filament\"",
+					material,
+				);
 				INFOPLIST_FILE = HelloCocoaPods/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -363,6 +453,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Filament\"",
+					material,
+				);
 				INFOPLIST_FILE = HelloCocoaPods/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (

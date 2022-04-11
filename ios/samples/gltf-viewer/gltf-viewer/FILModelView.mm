@@ -131,7 +131,7 @@ const float kSensitivity = 100.0f;
             {.engine = _engine, .normalizeSkinningWeights = true, .recomputeBoundingBoxes = false});
 
     _manipulator =
-            Manipulator<float>::Builder().orbitHomePosition(0.0f, 0.0f, 4.0f).build(Mode::ORBIT);
+            Manipulator<float>::Builder().orbitHomePosition(0.0f, 0.0f, 4.0f).build(Mode::FREE_FLIGHT);
 
     // Set up pan and pinch gesture recognizers, used to orbit, zoom, and translate the camera.
     _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];

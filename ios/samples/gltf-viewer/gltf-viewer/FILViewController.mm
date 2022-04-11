@@ -242,6 +242,7 @@ using namespace utils;
     viewer::ReceivedMessage const* message = _server->acquireReceivedMessage();
     if (message && message->label) {
         NSString* label = [NSString stringWithCString:message->label encoding:NSUTF8StringEncoding];
+        NSLog(@"label: %@", label);
         if ([label hasSuffix:@".json"]) {
             [self loadSettings:message];
         } else if ([label hasSuffix:@".glb"]) {

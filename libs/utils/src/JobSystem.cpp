@@ -377,7 +377,7 @@ bool JobSystem::execute(JobSystem::ThreadState& state) noexcept {
 
     Job* job = pop(state.workQueue);
     if (UTILS_UNLIKELY(job == nullptr)) {
-        // our queue is empty, try to steal a job
+        // our queue is empty, try to steal a job 当前的线程的工作队列没任务了，从别的线程偷任务
         job = steal(state);
     }
 
@@ -582,7 +582,7 @@ void JobSystem::adopt() {
     // all threads adopted by the JobSystem need to run at the same priority
     JobSystem::setThreadPriority(JobSystem::Priority::DISPLAY);
 
-    // This thread's queue will be selectable immediately (i.e.: before we set its TLS)
+    // This thread's queue will be selectable immediately (i.e.: before we set its TLS) (TLS: Thread Local Storage)
     // however, it's not a problem since mThreadState is pre-initialized and valid
     // (e.g.: the queue is empty).
 

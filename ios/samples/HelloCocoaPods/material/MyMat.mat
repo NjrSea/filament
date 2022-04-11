@@ -1,0 +1,26 @@
+material {
+    name : TwoTextureDemo,
+    parameters : [
+        {
+           type      : sampler2d,
+           name      : image0 
+        },
+        {
+            type : float,
+            name : imageAlpha 
+        }
+    ],
+    requires : [
+        uv0,
+        uv1
+    ],
+    shadingModel : unlit
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        float4 imageColor0 = texture(materialParams_image0, getUV0());
+        material.baseColor =  imageColor0;
+    }
+}
