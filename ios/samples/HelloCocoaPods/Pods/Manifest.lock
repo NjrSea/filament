@@ -27,17 +27,21 @@ PODS:
   - Filament/tsl (1.20.5)
   - Filament/utils (1.20.5):
     - Filament/tsl
+  - MJExtension (3.4.1)
 
 DEPENDENCIES:
   - Filament
+  - MJExtension
 
 SPEC REPOS:
   trunk:
     - Filament
+    - MJExtension
 
 SPEC CHECKSUMS:
   Filament: 781ffdad2e6529832a62d2015c4f2a77924125a5
+  MJExtension: 21c5f6f8c4d5d8844b7ae8fbae08fed0b501f961
 
-PODFILE CHECKSUM: c3cd425c8e99e099e91283d0343aff2ef86e0a39
+PODFILE CHECKSUM: f63b0af9f93f03bc48af065f01aabdf08fd4c4c2
 
 COCOAPODS: 1.10.2

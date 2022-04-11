@@ -10,6 +10,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface SDFFontManager : NSObject
+
++ (instancetype)sharedManager;
+
+@end
+
 @interface SDFFontRendererViewController : UIViewController
 
 @end
