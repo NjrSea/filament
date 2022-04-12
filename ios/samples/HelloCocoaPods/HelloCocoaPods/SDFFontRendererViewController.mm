@@ -92,7 +92,7 @@ struct Vertex {
 @property (nonatomic, assign)  CGFloat bbox_height;
 @property (nonatomic, assign)  CGFloat bbox_width;
 @property (nonatomic, assign)  CGFloat  bearing_x;
-@property (nonatomic, assign)  CGFloat bearing_y;
+@property (nonatomic, assign)  CGFloat  bearing_y;
 @property (nonatomic, copy)     NSString *charcode;
 @property (nonatomic, copy)     NSDictionary *kernings;
 @property (nonatomic, assign)  CGFloat s0;
@@ -283,33 +283,6 @@ struct Vertex {
 
     [self p_resize:mtkView.drawableSize];
 
-    static const Vertex QUAD_VERTICES[4] = {
-        {{-1, -1}, {0, 0}},
-        {{ 1, -1}, {1, 0}},
-        {{-1,  1}, {0, 1}},
-        {{ 1,  1}, {1, 1}},
-    };
-    static const uint16_t QUAD_INDICES[6] = { 0, 1, 2, 3, 2, 1 };
-
-    VertexBuffer::BufferDescriptor vertices(QUAD_VERTICES, sizeof(Vertex) * 4, nullptr);
-    IndexBuffer::BufferDescriptor indices(QUAD_INDICES, sizeof(uint16_t) * 6, nullptr);
-
-    using Type = VertexBuffer::AttributeType;
-    const uint8_t stride = sizeof(Vertex);
-    _vertexBuffer = VertexBuffer::Builder()
-        .vertexCount(4)
-        .bufferCount(1)
-        .attribute(VertexAttribute::POSITION, 0, Type::FLOAT2, offsetof(Vertex, position), stride)
-        .attribute(VertexAttribute::UV0, 0, Type::FLOAT2, offsetof(Vertex, uv), stride)
-        .build(*_engine);
-
-    _indexBuffer = IndexBuffer::Builder()
-        .indexCount(6)
-        .bufferType(IndexBuffer::IndexType::USHORT)
-        .build(*_engine);
-
-    _vertexBuffer->setBufferAt(*_engine, 0, std::move(vertices));
-    _indexBuffer->setBuffer(*_engine, std::move(indices));
 
     _imageTexture0 = [self p_loadTexture:@"OpenSans-Regular.png"];
 
@@ -322,10 +295,12 @@ struct Vertex {
     filamat::Package pkg = filamat::MaterialBuilder()
     // The material name, only used for debugging purposes.
         .name("Quad material")
+        .flipUV(false)
     // Use the unlit shading mode, because we don't have any lights in our scene.
         .shading(filamat::MaterialBuilder::Shading::UNLIT)
         .require(VertexAttribute::POSITION)
         .require(VertexAttribute::UV0)
+        .blending(BlendingMode::TRANSPARENT)
         .parameter(SamplerType::SAMPLER_2D, SamplerFormat::FLOAT, "image0")
         .parameter(UniformType::FLOAT,  "smoothing")
         .parameter(UniformType::FLOAT,  "fontWidth")
@@ -337,8 +312,14 @@ struct Vertex {
     // Custom GLSL fragment code.
         .material("void material (inout MaterialInputs material) {"
                   "  prepareMaterial(material);"
-                  "  float4 imageColor0 = texture(materialParams_image0, getUV0());"
-                  "  material.baseColor = imageColor0;"
+                  "  float4 distanceVec = texture(materialParams_image0, getUV0());"
+                  "float distance = length(distanceVec.rgb);"
+                  "float finalColor = smoothstep(materialParams.fontWidth - materialParams.smoothing, materialParams.fontWidth + materialParams.smoothing, distance);"
+                  "if(distance > 0.05f) {"
+                  "  material.baseColor = vec4(finalColor);"
+                  "} else {"
+                  "  discard;"
+                  "}"
                   "}")
     // Compile for Metal on mobile platforms.
         .targetApi(filamat::MaterialBuilder::TargetApi::METAL)
@@ -369,11 +350,16 @@ struct Vertex {
     RenderableManager::Builder(1)
         .boundingBox({{ -1, -1, -1 }, { 1, 1, 1 }})
         .material(0, _materialInstance)
-        .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, 6)
-        .culling(false).receiveShadows(false).castShadows(false).build(*_engine, _renderable);
+        .culling(false)
+        .receiveShadows(false)
+        .castShadows(false)
+        .build(*_engine, _renderable);
+
+    [self p_drawCharacter:@"B"];
+
     _scene->addEntity(_renderable);
 
-    [self p_drawCharacter:@"I"];
+
 }
 
 - (Texture *)p_loadTexture:(NSString *)name {
@@ -421,10 +407,81 @@ struct Vertex {
 
 
 - (void)p_drawCharacter:(NSString *)ch {
+    auto& rm = _engine->getRenderableManager();
+    auto instance = rm.getInstance(_renderable);
 
-    [[SDFFontManager sharedManager] atlasFrameForCharacter:ch];
+    auto atlasData = [[SDFFontManager sharedManager] atlasData];
+
+    AtlasFrame *frameOfChar = [[SDFFontManager sharedManager] atlasFrameForCharacter:ch];
+    GlyphData *glyphOfChar = [[SDFFontManager sharedManager] metricsForCharacter:ch];
+
+    CGFloat atlasWidth = atlasData.meta.width;
+    CGFloat atlasHeight = atlasData.meta.height;
+
+    CGFloat cursorX = 0;
+    CGFloat cursorY = 0;
+
+    float w = frameOfChar.w / atlasWidth;
+    float h = frameOfChar.h / atlasHeight;
+    float s0 = frameOfChar.x / atlasWidth;
+    float t0 = frameOfChar.y / atlasHeight;
+    float s1 = s0 + w;
+    float t1 = t0 + h;
+
+    float glyphWidth = glyphOfChar.bbox_width;
+    float glyphHeight = glyphOfChar.bbox_height;
+    float glyphBearingX = glyphOfChar.bearing_x;
+    float glyphBearingY = glyphOfChar.bearing_y;
+    float glyphAdvanceX = glyphOfChar.advance_x;
+
+    float x = cursorX + glyphBearingX;
+    float y = cursorY + glyphBearingY;
+
+    Vertex v1 = {{x, y - glyphHeight}, {s0, t1}};
+    Vertex v2 = {{x + glyphWidth, y - glyphHeight}, {s1, t1}};
+    Vertex v3 = {{x, y}, {s0, t0}};
+    Vertex v4 = {{x + glyphWidth, y}, {s1, t0}};
+
+    cursorX += glyphAdvanceX;
+
+    Vertex *font_vertices = new Vertex[4]; // 这里需要把顶点数据交给filament，在 buffer descriptor的callback里销毁数据 或者不变的情况下用static数据
+    font_vertices[0] = v1;
+    font_vertices[1] = v2;
+    font_vertices[2] = v3;
+    font_vertices[3] = v4;
+
+    static const uint16_t font_indices[6] = {0, 1, 2, 1, 3, 2}; //{ 0, 3, 2, 2, 1, 0 };
+
+    VertexBuffer::BufferDescriptor vertices(font_vertices, sizeof(Vertex) * 4, [](void* buffer, size_t size, void* user) {
+        if (buffer) {
+            free(buffer);
+        }
+    });
+    IndexBuffer::BufferDescriptor indices(font_indices, sizeof(uint16_t) * 6, nullptr);
+
+    using Type = VertexBuffer::AttributeType;
+    const uint8_t stride = sizeof(Vertex);
+    _vertexBuffer = VertexBuffer::Builder()
+        .vertexCount(4)
+        .bufferCount(1)
+        .attribute(VertexAttribute::POSITION, 0, Type::FLOAT2, offsetof(Vertex, position), stride)
+        .attribute(VertexAttribute::UV0, 0, Type::FLOAT2, offsetof(Vertex, uv), stride)
+        .build(*_engine);
+
+    _indexBuffer = IndexBuffer::Builder()
+        .indexCount(6)
+        .bufferType(IndexBuffer::IndexType::USHORT)
+        .build(*_engine);
+
+    _vertexBuffer->setBufferAt(*_engine, 0, std::move(vertices));
+    _indexBuffer->setBuffer(*_engine, std::move(indices));
+
+    rm.setGeometryAt(instance, 0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, 6);
+    rm.setMaterialInstanceAt(instance, 0, _materialInstance);
+
     NSLog(@"");
 }
+
 
 
 #pragma mark - MTKViewDelegate
