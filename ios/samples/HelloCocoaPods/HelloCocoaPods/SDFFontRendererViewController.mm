@@ -227,6 +227,7 @@ struct Vertex {
     MaterialInstance *_materialInstance;
     Texture *_imageTexture0;
     Entity _renderable;
+
 }
 
 - (void)dealloc {
@@ -393,13 +394,14 @@ struct Vertex {
 - (void)p_resize:(CGSize)size {
     _view->setViewport({0, 0, (uint32_t)size.width, (uint32_t)size.height});
 
+    double scale = 1;
     const double aspect = size.width / size.height;
-    const double left = -2.0 * aspect;
-    const double right = 2 * aspect;
-    const double bottom = -2.0;
-    const double top = 2.0;
+    const double left = -scale * aspect;
+    const double right = scale * aspect;
+    const double bottom = -scale;
+    const double top = scale;
     const double near = 0; // why? ortho projection
-    const double far = 1.0; // why? ortho projection
+    const double far = 2.0; // why? ortho projection
 
     _camera->setProjection(Camera::Projection::ORTHO, left, right, bottom, top, near, far);
 }
@@ -450,7 +452,7 @@ struct Vertex {
     font_vertices[2] = v3;
     font_vertices[3] = v4;
 
-    static const uint16_t font_indices[6] = {0, 1, 2, 1, 3, 2}; //{ 0, 3, 2, 2, 1, 0 };
+    static const uint16_t font_indices[6] = {0, 1, 2, 1, 3, 2};
 
     VertexBuffer::BufferDescriptor vertices(font_vertices, sizeof(Vertex) * 4, [](void* buffer, size_t size, void* user) {
         if (buffer) {
@@ -479,7 +481,14 @@ struct Vertex {
     rm.setGeometryAt(instance, 0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, 6);
     rm.setMaterialInstanceAt(instance, 0, _materialInstance);
 
-    NSLog(@"");
+//    auto& tm = _engine->getTransformManager();
+//    auto transformInstance = tm.getInstance(_renderable);
+//    math::mat4f transform = math::mat4f::scaling(0.2) * math::mat4f::translation(math::float3{-1, 1, 0}) * tm.getWorldTransform(transformInstance);
+//    matt::mat4f::como
+//    tm.setTransform(transformInstance, transform);
+
+
+
 }
 
 
@@ -487,10 +496,6 @@ struct Vertex {
 #pragma mark - MTKViewDelegate
 
 - (void)update {
-    //    auto& tm = _engine->getTransformManager();
-    //    auto i = tm.getInstance(_triangle);
-    //    const auto time = CACurrentMediaTime();
-    //    tm.setTransform(i, math::mat4f::rotation(time, math::float3 {0.0, 0.0, 1.0}));
 }
 
 
