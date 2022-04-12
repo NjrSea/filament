@@ -16,17 +16,14 @@ canvas { touch-action: none; width: 100%; height: 100%; }
 <script src="gl-matrix-min.js"></script>
 <script>
 
-const albedo_suffix = Filament.getSupportedFormatSuffix('astc s3tc_srgb');
-const texture_suffix = Filament.getSupportedFormatSuffix('etc');
-
 const env = 'default_env'
 const ibl_url = `${env}/${env}_ibl.ktx`;
 const sky_url = `${env}/${env}_skybox.ktx`;
-const albedo_url = `albedo${albedo_suffix}.ktx`;
-const ao_url = `ao${texture_suffix}.ktx`;
-const metallic_url = `metallic${texture_suffix}.ktx`;
-const normal_url = `normal${texture_suffix}.ktx`;
-const roughness_url = `roughness${texture_suffix}.ktx`;
+const albedo_url = `albedo.ktx2`;
+const ao_url = `ao.ktx`;
+const metallic_url = `metallic.ktx2`;
+const normal_url = `normal.ktx2`;
+const roughness_url = `roughness.ktx2`;
 const filamat_url = 'textured.filamat';
 const filamesh_url = 'suzanne.filamesh';
 
@@ -83,11 +80,11 @@ class App {
             Filament.MagFilter.LINEAR,
             Filament.WrapMode.CLAMP_TO_EDGE);
 
-        const albedo = engine.createTextureFromKtx(albedo_url, {srgb: true});
-        const roughness = engine.createTextureFromKtx(roughness_url);
-        const metallic = engine.createTextureFromKtx(metallic_url);
-        const normal = engine.createTextureFromKtx(normal_url);
-        const ao = engine.createTextureFromKtx(ao_url);
+        const albedo = engine.createTextureFromKtx2(albedo_url, {srgb: true});
+        const roughness = engine.createTextureFromKtx2(roughness_url);
+        const metallic = engine.createTextureFromKtx2(metallic_url);
+        const normal = engine.createTextureFromKtx2(normal_url);
+        const ao = engine.createTextureFromKtx2(ao_url);
 
         matinstance.setTextureParameter('albedo', albedo, sampler)
         matinstance.setTextureParameter('roughness', roughness, sampler)

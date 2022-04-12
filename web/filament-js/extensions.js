@@ -115,36 +115,60 @@ Filament.loadClassExtensions = function() {
         return result;
     };
 
-    /// createTextureFromKtx ::method:: Utility function that creates a [Texture] from a KTX file.
-    /// buffer ::argument:: asset string, or Uint8Array, or [Buffer] with KTX file contents
+    /// createTextureFromKtx1 ::method:: Utility function that creates a [Texture] from a KTX1 file.
+    /// buffer ::argument:: asset string, or Uint8Array, or [Buffer] with KTX1 file contents
     /// options ::argument:: Options dictionary.
     /// ::retval:: [Texture]
-    Filament.Engine.prototype.createTextureFromKtx = function(buffer, options) {
+    Filament.Engine.prototype.createTextureFromKtx1 = function(buffer, options) {
         buffer = getBufferDescriptor(buffer);
-        const result = Filament._createTextureFromKtx(buffer, this, options);
+        const result = Filament._createTextureFromKtx1(buffer, this, options);
         buffer.delete();
         return result;
     };
 
-    /// createIblFromKtx ::method:: Utility that creates an [IndirectLight] from a KTX file.
+    /// createTextureFromKtx2 ::method:: Utility function that creates a [Texture] from a KTX2 file.
+    /// buffer ::argument:: asset string, or Uint8Array, or [Buffer] with KTX2 file contents
+    /// options ::argument:: Options dictionary.
+    /// ::retval:: [Texture]
+    Filament.Engine.prototype.createTextureFromKtx2 = function(buffer, options) {
+        buffer = getBufferDescriptor(buffer);
+
+        const engine = this;
+        const quiet = false;
+        const reader = Filament.Ktx2Reader(engine, quiet);
+
+        reader.requestFormat(...);
+        reader.requestFormat(...);
+        reader.requestFormat(...);
+
+        result = reader.load(buffer, options.srgb ? Filament.TransferFunction.sRGB :
+            Filament.TransferFunction.LINEAR);
+
+        reader.delete();
+
+        buffer.delete();
+        return result;
+    };
+
+    /// createIblFromKtx1 ::method:: Utility that creates an [IndirectLight] from a KTX file.
     /// NOTE: To prevent a leak, please be sure to destroy the associated reflections texture.
     /// buffer ::argument:: asset string, or Uint8Array, or [Buffer] with KTX file contents
     /// options ::argument:: Options dictionary.
     /// ::retval:: [IndirectLight]
-    Filament.Engine.prototype.createIblFromKtx = function(buffer, options) {
+    Filament.Engine.prototype.createIblFromKtx1 = function(buffer, options) {
         buffer = getBufferDescriptor(buffer);
-        const result = Filament._createIblFromKtx(buffer, this, options);
+        const result = Filament._createIblFromKtx1(buffer, this, options);
         buffer.delete();
         return result;
     };
 
-    /// createSkyFromKtx ::method:: Utility function that creates a [Skybox] from a KTX file.
+    /// createSkyFromKtx1 ::method:: Utility function that creates a [Skybox] from a KTX file.
     /// NOTE: To prevent a leak, please be sure to destroy the associated texture.
     /// buffer ::argument:: asset string, or Uint8Array, or [Buffer] with KTX file contents
     /// options ::argument:: Options dictionary.
     /// ::retval:: [Skybox]
-    Filament.Engine.prototype.createSkyFromKtx = function(buffer, options) {
-        const skytex = this.createTextureFromKtx(buffer, options);
+    Filament.Engine.prototype.createSkyFromKtx1 = function(buffer, options) {
+        const skytex = this.createTextureFromKtx1(buffer, options);
         return Filament.Skybox.Builder().environment(skytex).build(this);
     };
 
@@ -450,6 +474,15 @@ Filament.loadClassExtensions = function() {
         blob.delete();
         return result;
     }
+
+    // NOTE: buffer should be a TypedArray.
+    Filament.Ktx2Reader.prototype.load = function(buffer, transferFunction) {
+        const bytesView = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+        const pointer = Filament._malloc(bytesView.byteLength);
+        Filament.HEAPU8.set(bytesView, pointer);
+        this._load(pointer, bytesView.byteLength, transferFunction);
+        Filament._free(pointer);
+    };
 
     Filament.Texture.prototype.setImage = function(engine, level, pbd) {
         this._setImage(engine, level, pbd);

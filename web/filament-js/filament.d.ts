@@ -563,15 +563,17 @@ export class Engine {
     public static create(canvas: HTMLCanvasElement, contextOptions?: object): Engine;
     public execute(): void;
     public createCamera(entity: Entity): Camera;
-    public createIblFromKtx(urlOrBuffer: BufferReference): IndirectLight;
     public createMaterial(urlOrBuffer: BufferReference): Material;
     public createRenderer(): Renderer;
     public createScene(): Scene;
-    public createSkyFromKtx(urlOrBuffer: BufferReference): Skybox;
     public createSwapChain(): SwapChain;
     public createTextureFromJpeg(urlOrBuffer: BufferReference, options?: object): Texture;
     public createTextureFromPng(urlOrBuffer: BufferReference, options?: object): Texture;
-    public createTextureFromKtx(urlOrBuffer: BufferReference, options?: object): Texture;
+
+    public createIblFromKtx1(urlOrBuffer: BufferReference): IndirectLight;
+    public createSkyFromKtx1(urlOrBuffer: BufferReference): Skybox;
+    public createTextureFromKtx1(urlOrBuffer: BufferReference, options?: object): Texture;
+
     public createView(): View;
 
     public createAssetLoader(): gltfio$AssetLoader;

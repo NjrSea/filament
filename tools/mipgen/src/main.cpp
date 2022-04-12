@@ -417,14 +417,16 @@ int main(int argc, char* argv[]) {
         }
 
         BasisEncoder::Builder builder(miplevels.size() + 1);
+        using IntermediateFormat = BasisEncoder::IntermediateFormat;
 
         size_t mipIndex = 0;
         builder
-            .intermediateFormat(g_ktxCompression == UASTC ? BasisEncoder::UASTC : BasisEncoder::ETC1S)
+            .intermediateFormat((g_ktxCompression == UASTC || g_ktxCompression == UASTC_NORMALS) ?
+                    IntermediateFormat::UASTC : IntermediateFormat::ETC1S)
             .grayscale(g_grayscale)
             .linear(g_sourceIsLinear)
             .quiet(g_quietMode)
-            .normals(g_filter == Filter::GAUSSIAN_NORMALS)
+            .normals(g_ktxCompression == ETC1S_NORMALS || g_ktxCompression == UASTC_NORMALS)
             .miplevel(mipIndex++, sourceImage);
 
         for (auto image : miplevels) {

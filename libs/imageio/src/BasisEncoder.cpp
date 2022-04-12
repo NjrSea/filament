@@ -31,7 +31,7 @@ struct BasisEncoderBuilderImpl {
     bool linear = false;
     bool normals = false;
     bool quiet = false;
-    size_t jobs = 1;
+    size_t jobs = 4;
     bool error = false;
 };
 
@@ -77,15 +77,15 @@ Builder& Builder::miplevel(size_t level, const LinearImage& floatImage) noexcept
 
     LinearImage sourceImage = mImpl->normals ? vectorsToColors(floatImage) : floatImage;
 
-    const bool encodeLinearly = mImpl->linear;
+    const bool applyTransferFunction = !mImpl->linear;
 
     if (mImpl->grayscale) {
-        std::unique_ptr<uint8_t[]> data = encodeLinearly ?
-            fromLinearToGrayscale<uint8_t>(sourceImage) : fromLinearTosRGB<uint8_t, 1>(sourceImage);
+        std::unique_ptr<uint8_t[]> data = applyTransferFunction ?
+            fromLinearTosRGB<uint8_t, 1>(sourceImage) : fromLinearToGrayscale<uint8_t>(sourceImage);
         basisImage->init(data.get(), floatImage.getWidth(), floatImage.getHeight(), 1);
     } else {
-        std::unique_ptr<uint8_t[]> data = encodeLinearly ?
-            fromLinearToRGB<uint8_t, 4>(sourceImage) : fromLinearTosRGB<uint8_t, 4>(sourceImage);
+        std::unique_ptr<uint8_t[]> data = applyTransferFunction ?
+            fromLinearTosRGB<uint8_t, 4>(sourceImage) : fromLinearToRGB<uint8_t, 4>(sourceImage);
         basisImage->init(data.get(), floatImage.getWidth(), floatImage.getHeight(), 4);
     }
 

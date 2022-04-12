@@ -42,20 +42,34 @@ public:
         Builder(Builder&& that) noexcept;
         Builder& operator=(Builder&& that) noexcept;
 
-        // Note that BasisU consumes uint8-based color data, not floats, and generally does not make
-        // a distinction between sRGB targets and linear targets. This flag does two things:
-        // (1) tells the encoder to convert these floats to uint8 without a transfer function.
-        // (2) adds a tag to the ktx file that tells the decoder to choose a linear hardware format.
+        // Enables the linear flag, which does two things:
+        // (1) Specifies that the encoder should encode the image without a transfer function.
+        // (2) Adds a tag to the ktx file that tells the loader that no transfer function was used.
+        // Note that the tag does not actually affect the encoding process. BasisU consumes
+        // uint8-based color data, not floats. At the time of this writing, BasisU does not make a
+        // distinction between sRGB targets and linear targets.
         Builder& linear(bool enabled) noexcept;
 
+        // Chooses the intermiediate format as described in the BasisU documentation.
+        // For highest quality, use UASTC.
         Builder& intermediateFormat(IntermediateFormat format) noexcept;
 
+        // Honors only the first component of the incoming LinearImage.
         Builder& grayscale(bool enabled) noexcept;
+
+        // Transforms the incoming image from [-1, +1] to [0, 1] before passing it to the encoder.
         Builder& normals(bool enabled) noexcept;
+
+        // Submits image data in linear floating-point format.
         Builder& miplevel(size_t mipIndex, const LinearImage& image) noexcept;
+
+        // Initializes the basis encoder with the given number of jobs.
         Builder& jobs(size_t count) noexcept;
+
+        // Supresses status messages.
         Builder& quiet(bool enabled) noexcept;
 
+        // Creates a BasisU encoder and returns null if an error occurred.
         BasisEncoder* build();
 
     private:

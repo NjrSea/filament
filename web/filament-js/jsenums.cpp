@@ -28,6 +28,8 @@
 #include <filament/VertexBuffer.h>
 #include <filament/View.h>
 
+#include <ktxreader/Ktx2Reader.h>
+
 #include <emscripten.h>
 #include <emscripten/bind.h>
 
@@ -410,5 +412,9 @@ enum_<backend::CullingMode>("CullingMode")
     .value("FRONT", backend::CullingMode::FRONT)
     .value("BACK", backend::CullingMode::BACK)
     .value("FRONT_AND_BACK", backend::CullingMode::FRONT_AND_BACK);
+
+enum_<ktxreader::Ktx2Reader::TransferFunction>("TransferFunction")
+    .value("LINEAR", ktxreader::Ktx2Reader::TransferFunction::LINEAR)
+    .value("sRGB", ktxreader::Ktx2Reader::TransferFunction::sRGB);
 
 }
