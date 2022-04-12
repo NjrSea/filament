@@ -29,7 +29,7 @@
 		A0F63E9B28046640002AD86D /* Roboto-Medium.png in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9528046640002AD86D /* Roboto-Medium.png */; };
 		A0F63E9C28046640002AD86D /* OpenSans-Regular.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9628046640002AD86D /* OpenSans-Regular.plist */; };
 		A0F63E9D28046640002AD86D /* Roboto-Medium.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0F63E9728046640002AD86D /* Roboto-Medium.plist */; };
-		A0F63EA02804677E002AD86D /* SDFFontRendererViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.m */; };
+		A0F63EA02804677E002AD86D /* SDFFontRendererViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,7 +68,7 @@
 		A0F63E9628046640002AD86D /* OpenSans-Regular.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OpenSans-Regular.plist"; sourceTree = "<group>"; };
 		A0F63E9728046640002AD86D /* Roboto-Medium.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Roboto-Medium.plist"; sourceTree = "<group>"; };
 		A0F63E9E2804677E002AD86D /* SDFFontRendererViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDFFontRendererViewController.h; sourceTree = "<group>"; };
-		A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDFFontRendererViewController.m; sourceTree = "<group>"; };
+		A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SDFFontRendererViewController.mm; sourceTree = "<group>"; };
 		D8F6B088AA46E901D4C80A53 /* libPods-HelloCocoaPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HelloCocoaPods.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDD44F53C2D94EF626D2238 /* Pods-HelloCocoaPods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HelloCocoaPods.debug.xcconfig"; path = "Target Support Files/Pods-HelloCocoaPods/Pods-HelloCocoaPods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,7 +125,7 @@
 				A0BF6BBF27FC732800B99606 /* BlendViewController.mm */,
 				A0F63E8C27FFC346002AD86D /* stb_image.h */,
 				A0F63E9E2804677E002AD86D /* SDFFontRendererViewController.h */,
-				A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.m */,
+				A0F63E9F2804677E002AD86D /* SDFFontRendererViewController.mm */,
 			);
 			path = HelloCocoaPods;
 			sourceTree = "<group>";
@@ -288,7 +288,7 @@
 				43C0904024B7DCE8009D291E /* ViewController.mm in Sources */,
 				43C0903A24B7DCE8009D291E /* AppDelegate.m in Sources */,
 				43C0904B24B7DCE9009D291E /* main.m in Sources */,
-				A0F63EA02804677E002AD86D /* SDFFontRendererViewController.m in Sources */,
+				A0F63EA02804677E002AD86D /* SDFFontRendererViewController.mm in Sources */,
 				A0F63E8B27FFBB12002AD86D /* Resource.S in Sources */,
 				A0BF6BBD27FA9B9D00B99606 /* DemoViewController.mm in Sources */,
 				43C0903D24B7DCE8009D291E /* SceneDelegate.m in Sources */,
