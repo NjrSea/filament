@@ -8,14 +8,29 @@
 
 #import "SDFFontRendererViewController.h"
 #import <Foundation/Foundation.h>
+#import <MJExtension.h>
+
+
+
+@interface AtlasMetaData : NSObject
+
+@property (nonatomic, assign) CGFloat width;
+@property (nonatomic, assign) CGFloat height;
+@property (nonatomic, copy)   NSString *image;
+
+@end
+
+@implementation AtlasMetaData
+
+@end
 
 @interface GlyphData : NSObject
 
-@property (nonatomic, assign)  CGFloat advanceX;
-@property (nonatomic, assign)  CGFloat bboxHeight;
-@property (nonatomic, assign)  CGFloat bboxWidth;
-@property (nonatomic, assign)  CGFloat  bearingX;
-@property (nonatomic, assign)  CGFloat bearingY;
+@property (nonatomic, assign)  CGFloat advance_x;
+@property (nonatomic, assign)  CGFloat bbox_height;
+@property (nonatomic, assign)  CGFloat bbox_width;
+@property (nonatomic, assign)  CGFloat  bearing_x;
+@property (nonatomic, assign)  CGFloat bearing_y;
 @property (nonatomic, copy)     NSString *charcode;
 @property (nonatomic, copy)     NSDictionary *kernings;
 @property (nonatomic, assign)  CGFloat s0;
@@ -27,13 +42,16 @@
 
 @implementation GlyphData
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    self = [super init];
-    if (self) {
+@end
 
-    }
-    return self;
-}
+@interface AtlasData : NSObject
+
+@property (nonatomic, strong) AtlasMetaData *meta;
+@property (nonatomic, copy) NSDictionary<NSString *, NSDictionary<NSString *, NSNumber *> *> *frames;
+
+@end
+
+@implementation AtlasData
 
 @end
 
@@ -41,35 +59,23 @@
 
 @property (nonatomic, assign) CGFloat ascender;
 @property (nonatomic, assign) CGFloat descender;
-@property (nonatomic, assign) NSDictionary *glyphData;
+@property (nonatomic, assign) NSDictionary *glyph_data;
 @property (nonatomic, assign) CGFloat height;
-@property (nonatomic, assign) CGFloat maxAdvance;
+@property (nonatomic, assign) CGFloat max_advance;
 @property (nonatomic, assign) CGFloat name;
 @property (nonatomic, assign) CGFloat size;
-@property (nonatomic, assign) CGFloat spaceAdvance;
-
-//case  = "glyph_data"
-//case
-//case  = "max_advance"
-//case
-//case
-//case  = "space_advance"
+@property (nonatomic, assign) CGFloat space_advance;
 
 @end
 
 @implementation FontMetrics
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
-
 @end
 
 @interface SDFFontManager ()
+
+@property (nonatomic, strong) FontMetrics *metrics;
+@property (nonatomic, strong) AtlasData *atlasData;
 
 @end
 
@@ -88,16 +94,30 @@
     self = [super init];
 
     if (self) {
-        [self p_load];
+        [self p_loadFontMetricsWithName:@"OpenSans-Regular"];
+        [self p_loadFontFramesWithName:@"OpenSans-Regular.plist"];
     }
 
     return self;
 }
 
-- (void)p_load {
+- (void)p_loadFontMetricsWithName:(NSString *)name {
+    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"json"];
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path]
+                                                               options:0
+                                                                 error:nil];
+    _metrics = [FontMetrics mj_objectWithKeyValues:dictionary];
+    NSMutableDictionary *glyphDic = [NSMutableDictionary dictionary];
 
+    [_metrics.glyph_data enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSDictionary * _Nonnull obj, BOOL * _Nonnull stop) {
+        glyphDic[key] = [GlyphData mj_objectWithKeyValues:obj];
+    }];
+    _metrics.glyph_data = glyphDic;
 }
 
+- (void)p_loadFontFramesWithName:(NSString *)name {
+    _atlasData = [AtlasData mj_objectWithFilename:name];
+}
 
 @end
 
@@ -110,7 +130,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    [SDFFontManager sharedManager];
 }
 
 @end
