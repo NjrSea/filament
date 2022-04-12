@@ -54,11 +54,25 @@ using SubpassType = filament::backend::SubpassType;
 using SamplerFormat = filament::backend::SamplerFormat;
 using ParameterPrecision = filament::backend::Precision;
 using CullingMode = filament::backend::CullingMode;
+using UniformType = filament::backend::UniformType;
 
 struct Vertex {
     math::float2 position;
     math::float2 uv;
 };
+
+@interface AtlasFrame : NSObject
+
+@property (nonatomic, assign) CGFloat x;
+@property (nonatomic, assign) CGFloat y;
+@property (nonatomic, assign) CGFloat w;
+@property (nonatomic, assign) CGFloat h;
+
+@end
+
+@implementation AtlasFrame
+
+@end
 
 @interface AtlasMetaData : NSObject
 
@@ -167,6 +181,20 @@ struct Vertex {
     _atlasData = [AtlasData mj_objectWithFilename:name];
 }
 
+- (GlyphData *)metricsForCharacter:(NSString *)ch {
+    return [[self.metrics glyph_data] objectForKey:ch];
+}
+
+- (AtlasFrame *)atlasFrameForCharacter:(NSString *)ch {
+    auto charValue = [ch characterAtIndex:0];
+
+   NSString *key = [NSString stringWithFormat:@"0x%04X", charValue];
+
+    NSDictionary *frameDic = self.atlasData.frames[key];
+
+    return [AtlasFrame mj_objectWithKeyValues:frameDic];
+}
+
 @end
 
 
@@ -181,9 +209,10 @@ struct Vertex {
         float outlineWidth;
         float shadowWidth;
         math::float2 shadowOffset;
+        math::float4 shadowColor;
         math::float4 fontColor;
         math::float4 outlineColor;
-        math::float4 shadowColor;
+
     } _params;
     Engine *_engine;
     SwapChain *_swapChain;
@@ -197,7 +226,6 @@ struct Vertex {
     Material *_material;
     MaterialInstance *_materialInstance;
     Texture *_imageTexture0;
-    Texture *_imageTexture1;
     Entity _renderable;
 }
 
@@ -205,7 +233,6 @@ struct Vertex {
     _engine->destroy(_renderable);
     _engine->destroy(_materialInstance);
     _engine->destroy(_material);
-    _engine->destroy(_imageTexture1);
     _engine->destroy(_imageTexture0);
     _engine->destroy(_indexBuffer);
     _engine->destroy(_vertexBuffer);
@@ -219,6 +246,15 @@ struct Vertex {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    _params.outlineWidth = 0.5;
+    _params.fontWidth = 0.9;
+    _params.smoothing = 0.1;
+    _params.shadowOffset = {0, 0};
+    _params.shadowColor = math::float4({0, 0, 0, 1});
+    _params.outlineColor = math::float4({0, 0, 0, 1});
+    _params.fontColor = math::float4({0, 0, 1, 1});
+
     [SDFFontManager sharedManager];
     [self p_setupFilament];
 }
@@ -275,8 +311,7 @@ struct Vertex {
     _vertexBuffer->setBufferAt(*_engine, 0, std::move(vertices));
     _indexBuffer->setBuffer(*_engine, std::move(indices));
 
-    _imageTexture0 = [self p_loadTexture:@"bImage0"];
-    _imageTexture1 = [self p_loadTexture:@"bImage1"];
+    _imageTexture0 = [self p_loadTexture:@"OpenSans-Regular.png"];
 
     TextureSampler sampler(MinFilter::LINEAR, MagFilter::LINEAR);
 
@@ -289,17 +324,21 @@ struct Vertex {
         .name("Quad material")
     // Use the unlit shading mode, because we don't have any lights in our scene.
         .shading(filamat::MaterialBuilder::Shading::UNLIT)
+        .require(VertexAttribute::POSITION)
         .require(VertexAttribute::UV0)
-        .require(VertexAttribute::UV1)
         .parameter(SamplerType::SAMPLER_2D, SamplerFormat::FLOAT, "image0")
-        .parameter(SamplerType::SAMPLER_2D, SamplerFormat::FLOAT, "image1")
-        .parameter(filament::backend::UniformType::FLOAT, "cAlpha")
+        .parameter(UniformType::FLOAT,  "smoothing")
+        .parameter(UniformType::FLOAT,  "fontWidth")
+        .parameter(UniformType::FLOAT,  "outlineWidth")
+        .parameter(UniformType::FLOAT2, "shadowOffset")
+        .parameter(UniformType::FLOAT4, "shadowColor")
+        .parameter(UniformType::FLOAT4, "outlineColor")
+        .parameter(UniformType::FLOAT4, "fontColor")
     // Custom GLSL fragment code.
         .material("void material (inout MaterialInputs material) {"
                   "  prepareMaterial(material);"
                   "  float4 imageColor0 = texture(materialParams_image0, getUV0());"
-                  "  float4 imageColor1 = texture(materialParams_image1, getUV0());"
-                  "  material.baseColor =  (imageColor1 * materialParams.cAlpha) + ((1.0f - materialParams.cAlpha) * imageColor0);"
+                  "  material.baseColor = imageColor0;"
                   "}")
     // Compile for Metal on mobile platforms.
         .targetApi(filamat::MaterialBuilder::TargetApi::METAL)
@@ -315,10 +354,16 @@ struct Vertex {
         .package(pkg.getData(), pkg.getSize())
         .build(*_engine);
 
+
     _materialInstance = _material->createInstance();
     _materialInstance->setParameter("image0", _imageTexture0, sampler);
-    _materialInstance->setParameter("image1", _imageTexture1, sampler);
-    _materialInstance->setParameter("cAlpha", 0.8f);
+    _materialInstance->setParameter("smoothing", _params.smoothing);
+    _materialInstance->setParameter("fontWidth", _params.fontWidth);
+    _materialInstance->setParameter("shadowOffset", _params.shadowOffset);
+    _materialInstance->setParameter("shadowColor", _params.shadowColor);
+    _materialInstance->setParameter("outlineWidth", _params.outlineWidth);
+    _materialInstance->setParameter("outlineColor", _params.outlineColor);
+    _materialInstance->setParameter("fontColor", _params.smoothing);
 
     _renderable = EntityManager::get().create();
     RenderableManager::Builder(1)
@@ -327,11 +372,13 @@ struct Vertex {
         .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, 6)
         .culling(false).receiveShadows(false).castShadows(false).build(*_engine, _renderable);
     _scene->addEntity(_renderable);
+
+    [self p_drawCharacter:@"I"];
 }
 
 - (Texture *)p_loadTexture:(NSString *)name {
 
-    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
     int w, h, n;
     unsigned char* data = stbi_load(path.cString, &w, &h, &n, 4);
 
@@ -375,9 +422,8 @@ struct Vertex {
 
 - (void)p_drawCharacter:(NSString *)ch {
 
-
-
-
+    [[SDFFontManager sharedManager] atlasFrameForCharacter:ch];
+    NSLog(@"");
 }
 
 
