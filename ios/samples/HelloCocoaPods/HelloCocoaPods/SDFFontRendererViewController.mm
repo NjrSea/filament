@@ -175,6 +175,16 @@ struct Vertex {
 @end
 
 @implementation SDFFontRendererViewController {
+    struct SDFParams {
+        float smoothing;
+        float fontWidth;
+        float outlineWidth;
+        float shadowWidth;
+        math::float2 shadowOffset;
+        math::float4 fontColor;
+        math::float4 outlineColor;
+        math::float4 shadowColor;
+    } _params;
     Engine *_engine;
     SwapChain *_swapChain;
     Renderer *_renderer;
@@ -359,6 +369,15 @@ struct Vertex {
     const double far = 1.0; // why? ortho projection
 
     _camera->setProjection(Camera::Projection::ORTHO, left, right, bottom, top, near, far);
+}
+
+
+
+- (void)p_drawCharacter:(NSString *)ch {
+
+
+
+
 }
 
 
