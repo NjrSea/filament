@@ -138,6 +138,8 @@ struct Vertex {
 
 @property (nonatomic, strong) FontMetrics *metrics;
 @property (nonatomic, strong) AtlasData *atlasData;
+@property (nonatomic, readonly) NSString *fontName;
+@property (nonatomic, readonly) NSString *fontTextureName;
 
 @end
 
@@ -156,11 +158,24 @@ struct Vertex {
     self = [super init];
 
     if (self) {
-        [self p_loadFontMetricsWithName:@"OpenSans-Regular"];
-        [self p_loadFontFramesWithName:@"OpenSans-Regular.plist"];
+        NSString *fontFrame = [NSString stringWithFormat:@"%@.plist", self.fontName];
+
+
+        [self p_loadFontMetricsWithName:self.fontName];
+        [self p_loadFontFramesWithName:fontFrame];
     }
 
     return self;
+}
+
+- (NSString *)fontName {
+    //        NSString *fontName = @"OpenSans-Regular";
+    NSString *fontName = @"Roboto-Medium";
+    return fontName;
+}
+
+- (NSString *)fontTextureName {
+    return [NSString stringWithFormat:@"%@.png", [self fontName]];
 }
 
 - (void)p_loadFontMetricsWithName:(NSString *)name {
@@ -188,7 +203,7 @@ struct Vertex {
 - (AtlasFrame *)atlasFrameForCharacter:(NSString *)ch {
     auto charValue = [ch characterAtIndex:0];
 
-   NSString *key = [NSString stringWithFormat:@"0x%04X", charValue];
+    NSString *key = [[NSString stringWithFormat:@"0x%04X", charValue] lowercaseString];
 
     NSDictionary *frameDic = self.atlasData.frames[key];
 
@@ -285,7 +300,7 @@ struct Vertex {
     [self p_resize:mtkView.drawableSize];
 
 
-    _imageTexture0 = [self p_loadTexture:@"OpenSans-Regular.png"];
+    _imageTexture0 = [self p_loadTexture:[SDFFontManager sharedManager].fontTextureName];
 
     TextureSampler sampler(MinFilter::LINEAR, MagFilter::LINEAR);
 
@@ -301,7 +316,7 @@ struct Vertex {
         .shading(filamat::MaterialBuilder::Shading::UNLIT)
         .require(VertexAttribute::POSITION)
         .require(VertexAttribute::UV0)
-        .blending(BlendingMode::TRANSPARENT)
+        .blending(BlendingMode::TRANSPARENT) // 注意这里要设置，不然没有透明效果
         .parameter(SamplerType::SAMPLER_2D, SamplerFormat::FLOAT, "image0")
         .parameter(UniformType::FLOAT,  "smoothing")
         .parameter(UniformType::FLOAT,  "fontWidth")
@@ -316,11 +331,7 @@ struct Vertex {
                   "  float4 distanceVec = texture(materialParams_image0, getUV0());"
                   "float distance = length(distanceVec.rgb);"
                   "float finalColor = smoothstep(materialParams.fontWidth - materialParams.smoothing, materialParams.fontWidth + materialParams.smoothing, distance);"
-                  "if(distance > 0.05f) {"
                   "  material.baseColor = vec4(finalColor);"
-                  "} else {"
-                  "  discard;"
-                  "}"
                   "}")
     // Compile for Metal on mobile platforms.
         .targetApi(filamat::MaterialBuilder::TargetApi::METAL)
@@ -356,7 +367,28 @@ struct Vertex {
         .castShadows(false)
         .build(*_engine, _renderable);
 
-    [self p_drawCharacter:@"B"];
+    NSString *text = @"It is a period of civil war.\n"
+    @"Rebel spaceships, striking\n"
+    @"from a hidden base, have won\n"
+    @"their first victory against\n"
+    @"the evil Galactic Empire.\n"
+    @"\n"
+    @"During the battle, Rebel\n"
+    @"spies managed to steal secret\n"
+    @"plans to the Empire's\n"
+    @"ultimate weapon, the DEATH\n"
+    @"STAR, an armored space\n"
+    @"station with enough power to\n"
+    @"destroy an entire planet.\n"
+    @"\n"
+    @"Pursued by the Empire's\n"
+    @"sinister agents, Princess\n"
+    @"Leia races home aboard her\n"
+    @"starship, custodian of the\n"
+    @"stolen plans that can save\n"
+    @"her people and restore\n"
+    @"freedom to the galaxy.....";
+    [self p_drawCharacter:text];
 
     _scene->addEntity(_renderable);
 
@@ -394,7 +426,7 @@ struct Vertex {
 - (void)p_resize:(CGSize)size {
     _view->setViewport({0, 0, (uint32_t)size.width, (uint32_t)size.height});
 
-    double scale = 1;
+    double scale = 10;
     const double aspect = size.width / size.height;
     const double left = -scale * aspect;
     const double right = scale * aspect;
@@ -408,86 +440,107 @@ struct Vertex {
 
 
 
-- (void)p_drawCharacter:(NSString *)ch {
+- (void)p_drawCharacter:(NSString *)string {
     auto& rm = _engine->getRenderableManager();
     auto instance = rm.getInstance(_renderable);
 
     auto atlasData = [[SDFFontManager sharedManager] atlasData];
+    auto metrics = [[SDFFontManager sharedManager] metrics];
 
-    AtlasFrame *frameOfChar = [[SDFFontManager sharedManager] atlasFrameForCharacter:ch];
-    GlyphData *glyphOfChar = [[SDFFontManager sharedManager] metricsForCharacter:ch];
+    auto lines = [string componentsSeparatedByString:@"\n"];
 
-    CGFloat atlasWidth = atlasData.meta.width;
-    CGFloat atlasHeight = atlasData.meta.height;
+    static std::vector<Vertex> font_vertices; // 这里需要把顶点数据交给filament，在 buffer descriptor的callback里销毁数据 或者不变的情况下用static数据
+    static std::vector<uint16_t> font_indices;
 
     CGFloat cursorX = 0;
     CGFloat cursorY = 0;
+    uint16_t linesVerticesCount = 0;
 
-    float w = frameOfChar.w / atlasWidth;
-    float h = frameOfChar.h / atlasHeight;
-    float s0 = frameOfChar.x / atlasWidth;
-    float t0 = frameOfChar.y / atlasHeight;
-    float s1 = s0 + w;
-    float t1 = t0 + h;
+    for (NSString *line in lines) {
+        for(int i = 0; i < line.length; i++){
+            NSRange range = [line rangeOfComposedCharacterSequenceAtIndex:i];
+            NSString *ch = [line substringWithRange:range];
 
-    float glyphWidth = glyphOfChar.bbox_width;
-    float glyphHeight = glyphOfChar.bbox_height;
-    float glyphBearingX = glyphOfChar.bearing_x;
-    float glyphBearingY = glyphOfChar.bearing_y;
-    float glyphAdvanceX = glyphOfChar.advance_x;
+            AtlasFrame *frameOfChar = [[SDFFontManager sharedManager] atlasFrameForCharacter:ch];
+            GlyphData *glyphOfChar = [[SDFFontManager sharedManager] metricsForCharacter:ch];
 
-    float x = cursorX + glyphBearingX;
-    float y = cursorY + glyphBearingY;
+            CGFloat atlasWidth = atlasData.meta.width;
+            CGFloat atlasHeight = atlasData.meta.height;
 
-    Vertex v1 = {{x, y - glyphHeight}, {s0, t1}};
-    Vertex v2 = {{x + glyphWidth, y - glyphHeight}, {s1, t1}};
-    Vertex v3 = {{x, y}, {s0, t0}};
-    Vertex v4 = {{x + glyphWidth, y}, {s1, t0}};
+            float w = frameOfChar.w / atlasWidth;
+            float h = frameOfChar.h / atlasHeight;
+            float s0 = frameOfChar.x / atlasWidth;
+            float t0 = frameOfChar.y / atlasHeight;
+            float s1 = s0 + w;
+            float t1 = t0 + h;
 
-    cursorX += glyphAdvanceX;
+            float glyphWidth = glyphOfChar.bbox_width;
+            float glyphHeight = glyphOfChar.bbox_height;
+            float glyphBearingX = glyphOfChar.bearing_x;
+            float glyphBearingY = glyphOfChar.bearing_y;
+            float glyphAdvanceX = glyphOfChar.advance_x;
 
-    Vertex *font_vertices = new Vertex[4]; // 这里需要把顶点数据交给filament，在 buffer descriptor的callback里销毁数据 或者不变的情况下用static数据
-    font_vertices[0] = v1;
-    font_vertices[1] = v2;
-    font_vertices[2] = v3;
-    font_vertices[3] = v4;
+            float x = cursorX + glyphBearingX;
+            float y = cursorY + glyphBearingY;
 
-    static const uint16_t font_indices[6] = {0, 1, 2, 1, 3, 2};
+            Vertex v1 = {{x, y - glyphHeight}, {s0, t1}};
+            Vertex v2 = {{x + glyphWidth, y - glyphHeight}, {s1, t1}};
+            Vertex v3 = {{x, y}, {s0, t0}};
+            Vertex v4 = {{x + glyphWidth, y}, {s1, t0}};
 
-    VertexBuffer::BufferDescriptor vertices(font_vertices, sizeof(Vertex) * 4, [](void* buffer, size_t size, void* user) {
-        if (buffer) {
-            free(buffer);
+            cursorX += glyphAdvanceX;
+
+            font_vertices.push_back(v1);
+            font_vertices.push_back(v2);
+            font_vertices.push_back(v3);
+            font_vertices.push_back(v4);
+
+            uint16_t curIndex = linesVerticesCount + i * 4;
+            font_indices.push_back(curIndex + 0);
+            font_indices.push_back(curIndex + 1);
+            font_indices.push_back(curIndex + 2);
+            font_indices.push_back(curIndex + 1);
+            font_indices.push_back(curIndex + 3);
+            font_indices.push_back(curIndex + 2);
+
         }
+        cursorX = 0;
+        cursorY -= metrics.height;
+        linesVerticesCount += font_vertices.size();
+    }
+
+
+
+    VertexBuffer::BufferDescriptor vertices(font_vertices.data(), sizeof(Vertex) * font_vertices.size(), [](void* buffer, size_t size, void* user) {
+
     });
-    IndexBuffer::BufferDescriptor indices(font_indices, sizeof(uint16_t) * 6, nullptr);
+    IndexBuffer::BufferDescriptor indices(font_indices.data(), sizeof(uint16_t) * font_indices.size(), nullptr);
 
     using Type = VertexBuffer::AttributeType;
     const uint8_t stride = sizeof(Vertex);
     _vertexBuffer = VertexBuffer::Builder()
-        .vertexCount(4)
+        .vertexCount((uint32_t)(font_vertices.size()))
         .bufferCount(1)
         .attribute(VertexAttribute::POSITION, 0, Type::FLOAT2, offsetof(Vertex, position), stride)
         .attribute(VertexAttribute::UV0, 0, Type::FLOAT2, offsetof(Vertex, uv), stride)
         .build(*_engine);
 
     _indexBuffer = IndexBuffer::Builder()
-        .indexCount(6)
+        .indexCount((uint32_t)font_indices.size())
         .bufferType(IndexBuffer::IndexType::USHORT)
         .build(*_engine);
 
     _vertexBuffer->setBufferAt(*_engine, 0, std::move(vertices));
     _indexBuffer->setBuffer(*_engine, std::move(indices));
 
-    rm.setGeometryAt(instance, 0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, 6);
+    rm.setGeometryAt(instance, 0, RenderableManager::PrimitiveType::TRIANGLES, _vertexBuffer, _indexBuffer, 0, (uint32_t)font_indices.size());
     rm.setMaterialInstanceAt(instance, 0, _materialInstance);
 
-//    auto& tm = _engine->getTransformManager();
-//    auto transformInstance = tm.getInstance(_renderable);
-//    math::mat4f transform = math::mat4f::scaling(0.2) * math::mat4f::translation(math::float3{-1, 1, 0}) * tm.getWorldTransform(transformInstance);
-//    matt::mat4f::como
-//    tm.setTransform(transformInstance, transform);
 
-
+    auto& tm = _engine->getTransformManager();
+    auto transformInstance = tm.getInstance(_renderable);
+    math::mat4f transform = math::mat4f::translation(math::float3{-4.5, 4.5, 0}) * math::mat4f::scaling(0.4);
+    tm.setTransform(transformInstance, transform);
 
 }
 
